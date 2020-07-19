@@ -1,0 +1,41 @@
+name: Valid JSON
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Select Xcode 12
+      run: sudo xcode-select -s /Applications/Xcode_12.app && xcodebuild -version
+    - name: Validate JSON
+      run: swift .validate.swift diff
+  validate:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Select Xcode 12
+      run: sudo xcode-select -s /Applications/Xcode_12.app && xcodebuild -version
+    - name: Validate JSON
+      run: swift validate.swift
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit Files
+      if: ${{ failure() }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "SwiftPackageIndex Bot"
+        git commit -am "Apply Auto-Fixes"
+    - name: Push Changes
+      if: ${{ failure() }}
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.head_ref }}
