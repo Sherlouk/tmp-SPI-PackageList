@@ -1,11 +1,6 @@
 name: Nightly Audit
 
-on:
-  workflow_dispatch:
-    inputs:
-      temp:
-        description: 'temp'
-        required: false
+on: [ workflow_dispatch ]
 
 jobs:
   run_nightly:
