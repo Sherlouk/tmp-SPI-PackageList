@@ -1,10 +1,10 @@
 name: Nightly Audit
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      description: 'temp'
+      required: false
 
 jobs:
   run_nightly:
